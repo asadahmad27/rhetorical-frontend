@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect, Suspense } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 
 import { Box } from "@mui/material";
@@ -10,32 +10,52 @@ import MuiAlert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from '@react-three/drei';
-import { EffectComposer, Selection, Select, Outline } from "@react-three/postprocessing";
+import { OrbitControls } from "@react-three/drei";
+import {
+  EffectComposer,
+  Selection,
+  Select,
+  Outline,
+} from "@react-three/postprocessing";
 
-import { Cube } from '../../models/Cube';
-import { ECube1 } from '../../models/Explode_Cube1';
+import { Cube } from "../../models/Cube";
+import { ECube1 } from "../../models/Explode_Cube1";
 
 import useAppStore from "../../../store";
-import smallestloop from './assets/audios/smallestloop.mp3';
-import './Home.scss';
+import smallestloop from "./assets/audios/smallestloop.mp3";
+import "./Home.scss";
+import axios from "axios";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}api/`;
+
 export default function Home({ socket }) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [play, setPlay] = useState(false);
-  const { backgroundUri, explode, cube, addHistory, setExplode, setReset } = useAppStore();
+  const {
+    backgroundUri,
+    explode,
+    cube,
+    addHistory,
+    setExplode,
+    setReset,
+    setBackgroundUri,
+  } = useAppStore();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const audio = new Audio(smallestloop);
   audio.loop = true;
 
   const handleClick = () => {
     setOpen(true);
   };
+
+  console.log(backgroundUri, "backgroundUri", cube);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -50,17 +70,19 @@ export default function Home({ socket }) {
   };
 
   const abstractString = (str) => {
-    const words = str.split(' ');
-    return words.length > 6 ? words.slice(0, 6).join(' ') : str;
-  }
+    const words = str.split(" ");
+    return words.length > 6 ? words.slice(0, 6).join(" ") : str;
+  };
 
-  const generateRandomFont = () => `/fonts/font (${Math.ceil(Math.random() * 11)}).ttf`;
+  const generateRandomFont = () =>
+    `/fonts/font (${Math.ceil(Math.random() * 11)}).ttf`;
 
   useEffect(() => {
     // (async () => {
-    //  add code here 
+    //  add code here
     // })();
     socket.on("messageIncoming", (data) => {
+      console.log("meesage incoming", data);
       setPlay(true);
       setReset(true);
       const { filtered } = data;
@@ -70,7 +92,23 @@ export default function Home({ socket }) {
 
       setMessage(filtered);
       handleClick();
+
+      // url = data.url;
+      // setBackgroundUri(`${process.env.REACT_APP_BACKEND_URL}static/${url}`);
     });
+    (async () => {
+      let url = "";
+      if (pathname === "/public_view" && searchParams.get("background")) {
+        url = searchParams.get("background");
+      } else {
+        const result = await axios.get(API_URL + "get_default");
+        console.log(result, "Rreee");
+        const { data } = result;
+        url = data.url;
+        console.log("Dataaa", data);
+        setBackgroundUri(`${url}`);
+      }
+    })();
 
     return () => {
       socket.off("messageIncoming");
@@ -79,18 +117,33 @@ export default function Home({ socket }) {
   }, []);
 
   useEffect(() => {
-    if(play) {
+    if (play) {
       audio.play();
       audio.loop = true;
     }
-  }, [play])
+  }, [play]);
 
-  useEffect(() => { console.log('explode ====>', explode); console.log('cube ====>', cube) }, [explode])
+  useEffect(() => {
+    console.log("explode ====>", explode);
+    console.log("cube ====>", cube);
+  }, [explode, backgroundUri]);
+
+  // useEffect(() => {
+  //   console.log("explode ====>", explode);
+  //   console.log("cube ====>", cube);
+  // }, [backgroundUri]);
 
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
       <Box sx={{ height: "100%", width: "100%" }}>
-        <ReactPlayer
+        <video
+          width="100%"
+          height="100%"
+          style={{ position: "absolute", top: "0px", left: "0px" }}
+        >
+          <source src={backgroundUri} type="video/mp4" />
+        </video>
+        {/* <ReactPlayer
           url={backgroundUri}
           loop={true}
           playing={true}
@@ -98,7 +151,7 @@ export default function Home({ socket }) {
           width="100%"
           height="100%"
           style={{ position: "absolute", top: "0px", left: "0px" }}
-        />
+        /> */}
         <div className="canvas-container">
           <Canvas
             gl={{
@@ -119,7 +172,11 @@ export default function Home({ socket }) {
               {/* <Environment preset="city" blur={1} /> */}
               <Selection enabled>
                 <EffectComposer enabled autoClear={false}>
-                  <Outline visibleEdgeColor={'yellow'} hiddenEdgeColor={'yellow'} edgeStrength={5} />
+                  <Outline
+                    visibleEdgeColor={"yellow"}
+                    hiddenEdgeColor={"yellow"}
+                    edgeStrength={5}
+                  />
                 </EffectComposer>
 
                 <Select enabled>
@@ -128,15 +185,24 @@ export default function Home({ socket }) {
                   )}
                   {cube.length > 0 &&
                     cube.map((item, key) => {
-                      return <Cube index={key} key={key} font={generateRandomFont()} />
-                    })
-                  }
+                      return (
+                        <Cube
+                          index={key}
+                          key={key}
+                          font={generateRandomFont()}
+                        />
+                      );
+                    })}
                 </Select>
               </Selection>
             </Suspense>
           </Canvas>
         </div>
-        <Button className="background-button" variant="contained" onClick={handleBackground}>
+        <Button
+          className="background-button"
+          variant="contained"
+          onClick={handleBackground}
+        >
           Background
         </Button>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

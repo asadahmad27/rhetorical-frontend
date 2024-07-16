@@ -1,13 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { io } from 'socket.io-client';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { io } from "socket.io-client";
 
-const socket = io(process.env.REACT_APP_BACKEND_URL, {autoConnect: true});
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const socket = io(process.env.REACT_APP_BACKEND_URL, { autoConnect: true });
+console.log(
+  process.env.REACT_APP_BACKEND_URL,
+  "process.env.REACT_APP_BACKEND_URL"
+);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
