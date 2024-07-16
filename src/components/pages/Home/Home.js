@@ -136,14 +136,30 @@ export default function Home({ socket }) {
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
       <Box sx={{ height: "100%", width: "100%" }}>
-        <video
+        {/* <video
+          width="100%"
+          height="100%"
+          style={{ position: "absolute", top: "0px", left: "0px" }}
+          loop
+        >
+          <source
+            src={backgroundUri}
+            // type="video/mp4"
+          />
+        </video> */}
+        {/* <video
           width="100%"
           height="100%"
           style={{ position: "absolute", top: "0px", left: "0px" }}
         >
-          <source src={backgroundUri} type="video/mp4" />
-        </video>
-        {/* <ReactPlayer
+          <source
+            src={
+              "https://rhetoricall-server-e51eba5d9b0f.herokuapp.com/static/1721168442099-199860308.mp4"
+            }
+            // type="video/mp4"
+          />
+        </video> */}
+        <ReactPlayer
           url={backgroundUri}
           loop={true}
           playing={true}
@@ -151,7 +167,7 @@ export default function Home({ socket }) {
           width="100%"
           height="100%"
           style={{ position: "absolute", top: "0px", left: "0px" }}
-        /> */}
+        />
         <div className="canvas-container">
           <Canvas
             gl={{
