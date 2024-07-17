@@ -59,7 +59,7 @@ export default function Footer() {
       renderCell: (params) => {
         return (
           <div
-            style={{ cursor: "pointer",display:"flex",alignItems:"center" }}
+            style={{ cursor: "pointer", display: "flex", alignItems: "center" }}
             // onClick={() => {
             //   navigator.clipboard.writeText(
             //     `${process.env.REACT_APP_APP_URL}public_view?background=${params.row.url}`
@@ -67,7 +67,7 @@ export default function Footer() {
             // }}
           >
             {/* {`${process.env.REACT_APP_APP_URL}public_view?background=${params.row.url}`} */}
-            <video style={{width:"40px",height:"40px"}}>
+            <video style={{ width: "40px", height: "40px" }}>
               <source src={params.row.url} />
             </video>
             {`${params.row.url}`}
@@ -156,8 +156,6 @@ export default function Footer() {
   }, []);
 
   const handleChange = async (file) => {
-    console.log("uploading file ===>", file);
-
     setFileBlob(URL.createObjectURL(file));
     setFile(file);
   };

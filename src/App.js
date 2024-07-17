@@ -1,10 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-
-import Header from "./components/layout/Header";
-import Footer from "./components/layout/Footer";
 import Home from "./components/pages/Home";
+import Background from "./components/pages/Background";
 
 function App({ socket }) {
   return (
@@ -12,16 +10,7 @@ function App({ socket }) {
       <div className="Content">
         <Routes>
           <Route exact path="/" element={<Home socket={socket} />} />
-          <Route
-            exact
-            path="/background"
-            element={
-              <>
-                <Header />
-                <Footer />
-              </>
-            }
-          />
+          <Route exact path="/background" element={<Background />} />
         </Routes>
       </div>
     </div>

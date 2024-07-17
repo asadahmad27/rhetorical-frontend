@@ -3,7 +3,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
 import MuiAlert from "@mui/material/Alert";
@@ -24,13 +24,11 @@ import { ECube1 } from "../../models/Explode_Cube1";
 import useAppStore from "../../../store";
 import smallestloop from "./assets/audios/smallestloop.mp3";
 import "./Home.scss";
-import axios from "axios";
+import { getDefaultBackground } from "../../../services/api";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
-
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}api/`;
 
 export default function Home({ socket }) {
   const [open, setOpen] = useState(false);
@@ -55,8 +53,6 @@ export default function Home({ socket }) {
     setOpen(true);
   };
 
-  console.log(backgroundUri, "backgroundUri", cube);
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -78,9 +74,6 @@ export default function Home({ socket }) {
     `/fonts/font (${Math.ceil(Math.random() * 11)}).ttf`;
 
   useEffect(() => {
-    // (async () => {
-    //  add code here
-    // })();
     socket.on("messageIncoming", (data) => {
       console.log("meesage incoming", data);
       setPlay(true);
@@ -101,12 +94,14 @@ export default function Home({ socket }) {
       if (pathname === "/public_view" && searchParams.get("background")) {
         url = searchParams.get("background");
       } else {
-        const result = await axios.get(API_URL + "get_default");
-        console.log(result, "Rreee");
-        const { data } = result;
-        url = data.url;
-        console.log("Dataaa", data);
-        setBackgroundUri(`${url}`);
+        try {
+          const result = await getDefaultBackground();
+          const { data } = result;
+          url = data.url;
+          setBackgroundUri(`${url}`);
+        } catch (e) {
+          console.log(e);
+        }
       }
     })();
 
@@ -128,37 +123,10 @@ export default function Home({ socket }) {
     console.log("cube ====>", cube);
   }, [explode, backgroundUri]);
 
-  // useEffect(() => {
-  //   console.log("explode ====>", explode);
-  //   console.log("cube ====>", cube);
-  // }, [backgroundUri]);
-
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
+      <CircularProgress />
       <Box sx={{ height: "100%", width: "100%" }}>
-        {/* <video
-          width="100%"
-          height="100%"
-          style={{ position: "absolute", top: "0px", left: "0px" }}
-          loop
-        >
-          <source
-            src={backgroundUri}
-            // type="video/mp4"
-          />
-        </video> */}
-        {/* <video
-          width="100%"
-          height="100%"
-          style={{ position: "absolute", top: "0px", left: "0px" }}
-        >
-          <source
-            src={
-              "https://rhetoricall-server-e51eba5d9b0f.herokuapp.com/static/1721168442099-199860308.mp4"
-            }
-            // type="video/mp4"
-          />
-        </video> */}
         <ReactPlayer
           url={backgroundUri}
           loop={true}
