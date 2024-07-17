@@ -53,6 +53,8 @@ export default function Home({ socket }) {
     setOpen(true);
   };
 
+  console.log(backgroundUri, "backgroundUri", cube);
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
