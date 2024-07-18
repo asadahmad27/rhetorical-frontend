@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as THREE from "three";
 import { useRef, useEffect } from "react";
 import { useGLTF, useAnimations, Text } from "@react-three/drei";
