@@ -175,7 +175,7 @@ export default function Home({ socket }) {
                   {explode && (
                     <ECube1 font={generateRandomFont()} socket={socket} />
                   )}
-                  {/* {cube.length > 0 &&
+                  {cube.length > 0 &&
                     cube.map((item, key) => {
                       return (
                         <Cube
@@ -184,7 +184,7 @@ export default function Home({ socket }) {
                           font={generateRandomFont()}
                         />
                       );
-                    })} */}
+                    })}
                 </Select>
               </Selection>
             </Suspense>
