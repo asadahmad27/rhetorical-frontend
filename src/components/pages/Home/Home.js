@@ -88,6 +88,7 @@ export default function Home({ socket }) {
       setMessage(filtered);
       handleClick();
 
+      console.log(data);
       // url = data.url;
       // setBackgroundUri(`${process.env.REACT_APP_BACKEND_URL}static/${url}`);
     });
@@ -113,6 +114,7 @@ export default function Home({ socket }) {
     };
   }, []);
 
+  console.log(explode, cube, "explode, cube");
   useEffect(() => {
     if (play) {
       audio.play();
@@ -129,6 +131,7 @@ export default function Home({ socket }) {
     <Stack spacing={2} sx={{ width: "100%" }}>
       <CircularProgress />
       <Box sx={{ height: "100%", width: "100%" }}>
+        {/* {backgroundUri && ( */}
         <ReactPlayer
           url={backgroundUri}
           loop={true}
@@ -138,6 +141,7 @@ export default function Home({ socket }) {
           height="100%"
           style={{ position: "absolute", top: "0px", left: "0px" }}
         />
+        {/* )} */}
         <div className="canvas-container">
           <Canvas
             gl={{
@@ -169,7 +173,7 @@ export default function Home({ socket }) {
                   {explode && (
                     <ECube1 font={generateRandomFont()} socket={socket} />
                   )}
-                  {cube.length > 0 &&
+                  {/* {cube.length > 0 &&
                     cube.map((item, key) => {
                       return (
                         <Cube
@@ -178,7 +182,7 @@ export default function Home({ socket }) {
                           font={generateRandomFont()}
                         />
                       );
-                    })}
+                    })} */}
                 </Select>
               </Selection>
             </Suspense>

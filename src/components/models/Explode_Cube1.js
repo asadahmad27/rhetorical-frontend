@@ -15,11 +15,11 @@ export function ECube1(props) {
 
   useEffect(() => {
     actions["Animation"].play();
-    materials.CUBE.color.set('black');
+    materials.CUBE.color.set("black");
   }, [actions]);
 
   useFrame(() => {
-    (actions["Animation"].time > 2 && actions["Animation"].time < 16)
+    actions["Animation"].time > 2 && actions["Animation"].time < 16
       ? !showText && setShowText(true)
       : showText && setShowText(false);
     if (actions["Animation"].time > 16) {
@@ -30,7 +30,7 @@ export function ECube1(props) {
   });
 
   useEffect(() => {
-    if(reset) {
+    if (reset) {
       actions["Animation"].startAt(0);
       setReset(false);
     }
@@ -47,7 +47,18 @@ export function ECube1(props) {
           <mesh scale={0.2}>
             <planeBufferGeometry attach="geometry" args={[0.01, 0.01, 0.01]} />
             {showText && (
-              <Text font={font} color={'yellow'} maxWidth={7.5} textAlign={'center'} whiteSpace={'overflowWrap'} overflowWrap={'break-word'} fontSize={0.75} anchorX={'center'} anchorY={'middle'} position={[0, 0, 0.36]} >
+              <Text
+                font={font}
+                color={"yellow"}
+                maxWidth={7.5}
+                textAlign={"center"}
+                whiteSpace={"overflowWrap"}
+                overflowWrap={"break-word"}
+                fontSize={0.75}
+                anchorX={"center"}
+                anchorY={"middle"}
+                position={[0, 0, 0.36]}
+              >
                 {explode}
               </Text>
             )}
@@ -7198,3 +7209,135 @@ export function ECube1(props) {
 }
 
 useGLTF.preload("/models/Explode_Cube1.glb");
+
+// import { useRef, useEffect, useState, useCallback, useMemo } from "react";
+// import { useGLTF, useAnimations, Text, Edges } from "@react-three/drei";
+// import { useFrame } from "@react-three/fiber";
+// import useAppStore from "../../store";
+
+// const modelPath = "/models/Explode_Cube1.glb";
+// const initialPositions = [
+//   {
+//     name: "Cube_cell",
+//     position: [-7.25, 39.37, -9.46],
+//     rotation: [2.8, 1.21, -1.21],
+//     scale: 0.21,
+//   },
+//   {
+//     name: "Cube_cell001",
+//     position: [-19.57, -30.56, 26.15],
+//     rotation: [-1.23, -0.06, 2.93],
+//     scale: 0.21,
+//   },
+//   {
+//     name: "Cube_cell889",
+//     position: [3.26, 20.21, 38.76],
+//     rotation: [0.6, 0.06, -0.87],
+//     scale: 0.21,
+//   },
+//   {
+//     name: "Cube_cell890",
+//     position: [-26.53, 21.61, 24.41],
+//     rotation: [2.69, -0.2, 3.08],
+//     scale: 0.21,
+//   },
+//   {
+//     name: "Cube_cell891",
+//     position: [10.1, -16.25, 29.53],
+//     rotation: [2.37, -0.96, 2.15],
+//     scale: 0.21,
+//   },
+// ];
+
+// export function ECube1(props) {
+//   const group1 = useRef();
+//   const { font } = props;
+//   const { nodes, materials, animations } = useGLTF(modelPath);
+//   const { actions } = useAnimations(animations, group1);
+
+//   const [showText, setShowText] = useState(false);
+
+//   const { explode, convertCube, clearExplode, reset, setReset } = useAppStore();
+
+//   useEffect(() => {
+//     actions["Animation"].play();
+//     materials.CUBE.color.set("black");
+//   }, [actions, materials]);
+
+//   const handleAnimationFrame = useCallback(() => {
+//     const animationTime = actions["Animation"].time;
+//     if (animationTime > 2 && animationTime < 16) {
+//       !showText && setShowText(true);
+//     } else if (showText) {
+//       setShowText(false);
+//     }
+//     if (animationTime > 16) {
+//       actions["Animation"].stop();
+//       convertCube();
+//       clearExplode();
+//     }
+//   }, [actions, clearExplode, convertCube, showText]);
+
+//   useFrame(handleAnimationFrame);
+
+//   useEffect(() => {
+//     if (reset) {
+//       actions["Animation"].startAt(0);
+//       setReset(false);
+//     }
+//   }, [reset, actions, setReset]);
+
+//   const meshes = useMemo(
+//     () =>
+//       initialPositions.map((pos) => (
+//         <mesh
+//           key={pos.name}
+//           name={pos.name}
+//           geometry={nodes[pos.name].geometry}
+//           material={materials.CUBE}
+//           position={pos.position}
+//           rotation={pos.rotation}
+//           scale={pos.scale}
+//         />
+//       )),
+//     [nodes, materials]
+//   );
+
+//   return (
+//     <group ref={group1} {...props} dispose={null}>
+//       <group name="Scene">
+//         <group
+//           name="Explode_Cube1"
+//           position={[0, -0.91, 0]}
+//           scale={[9.35, 10.02, 9.9]}
+//         >
+//           <mesh scale={0.2}>
+//             <planeBufferGeometry attach="geometry" args={[0.01, 0.01, 0.01]} />
+//             {showText && (
+//               <Text
+//                 font={font}
+//                 color={"yellow"}
+//                 maxWidth={7.5}
+//                 textAlign={"center"}
+//                 whiteSpace={"overflowWrap"}
+//                 overflowWrap={"break-word"}
+//                 fontSize={0.75}
+//                 anchorX={"center"}
+//                 anchorY={"middle"}
+//                 position={[0, 0, 0.36]}
+//               >
+//                 {explode}
+//               </Text>
+//             )}
+//             <Edges renderOrder={1000}>
+//               <meshBasicMaterial color="yellow" depthTest={false} />
+//             </Edges>
+//           </mesh>
+//           {meshes}
+//         </group>
+//       </group>
+//     </group>
+//   );
+// }
+
+// useGLTF.preload(modelPath);
