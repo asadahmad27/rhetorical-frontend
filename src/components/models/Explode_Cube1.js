@@ -10,6 +10,8 @@ export function ECube1(props) {
   const { nodes, materials, animations } = useGLTF("/models/Explode_Cube1.glb");
   const { actions } = useAnimations(animations, group1);
 
+  console.log(nodes, "noed");
+
   const [showText, setShowText] = useState(false);
 
   const { explode, convertCube, clearExplode, reset, setReset } = useAppStore();
@@ -67,6 +69,46 @@ export function ECube1(props) {
               <meshBasicMaterial color="yellow" depthTest={false} />
             </Edges>
           </mesh>
+          {Object.keys(nodes).map((key, index) => (
+            <mesh
+              key={index}
+              name={key}
+              geometry={nodes[key].geometry}
+              material={materials.CUBE}
+              position={nodes[key].position}
+              rotation={nodes[key].rotation}
+              scale={0.21}
+            />
+          ))}
+        </group>
+        {/* <group
+          name="Explode_Cube1"
+          position={[0, -0.91, 0]}
+          scale={[9.35, 10.02, 9.9]}
+        >
+          <mesh scale={0.2}>
+            <planeBufferGeometry attach="geometry" args={[0.01, 0.01, 0.01]} />
+            {showText && (
+              <Text
+                font={font}
+                color={"yellow"}
+                maxWidth={7.5}
+                textAlign={"center"}
+                whiteSpace={"overflowWrap"}
+                overflowWrap={"break-word"}
+                fontSize={0.75}
+                anchorX={"center"}
+                anchorY={"middle"}
+                position={[0, 0, 0.36]}
+              >
+                {explode}
+              </Text>
+            )}
+            <Edges renderOrder={1000}>
+              <meshBasicMaterial color="yellow" depthTest={false} />
+            </Edges>
+          </mesh>
+          
           <mesh
             name="Cube_cell"
             geometry={nodes.Cube_cell.geometry}
@@ -7203,7 +7245,7 @@ export function ECube1(props) {
             rotation={[2.37, -0.96, 2.15]}
             scale={0.21}
           />
-        </group>
+        </group> */}
       </group>
     </group>
   );
@@ -7342,3 +7384,96 @@ useGLTF.preload("/models/Explode_Cube1.glb");
 // }
 
 // useGLTF.preload(modelPath);
+
+// /* eslint-disable */
+// import { useRef, useEffect, useState } from "react";
+// import { useGLTF, Text, Edges } from "@react-three/drei";
+// import { useFrame } from "@react-three/fiber";
+// import useAppStore from "../../store";
+
+// export function ECube1(props) {
+//   const group1 = useRef();
+//   const { font } = props;
+//   const { nodes, materials, animations } = useGLTF("/models/Explode_Cube1.glb");
+//   const [showText, setShowText] = useState(false);
+//   const { explode, convertCube, clearExplode, reset, setReset } = useAppStore();
+
+//   useEffect(() => {
+//     const action = animations["Animation"];
+//     action.play();
+//     materials.CUBE.color.set("black");
+//     return () => {
+//       action.stop();
+//       clearExplode();
+//     };
+//   }, [animations, materials, clearExplode]);
+
+//   useFrame((state, delta) => {
+//     const action = animations["Animation"];
+//     const time = action.time;
+//     if (time > 2 && time < 16) {
+//       !showText && setShowText(true);
+//     } else {
+//       showText && setShowText(false);
+//     }
+//     if (time > 16) {
+//       action.stop();
+//       convertCube();
+//     }
+//   });
+
+//   useEffect(() => {
+//     if (reset) {
+//       animations["Animation"].startAt(0);
+//       setReset(false);
+//     }
+//   }, [reset, animations, setReset]);
+
+//   return (
+//     <group ref={group1} {...props} dispose={null}>
+//       <group name="Scene">
+//         <group
+//           name="Explode_Cube1"
+//           position={[0, -0.91, 0]}
+//           scale={[9.35, 10.02, 9.9]}
+//         >
+//           <mesh scale={0.2}>
+//             <planeBufferGeometry attach="geometry" args={[0.01, 0.01, 0.01]} />
+//             {showText && (
+//               <Text
+//                 font={font}
+//                 color={"yellow"}
+//                 maxWidth={7.5}
+//                 textAlign={"center"}
+//                 whiteSpace={"overflowWrap"}
+//                 overflowWrap={"break-word"}
+//                 fontSize={0.75}
+//                 anchorX={"center"}
+//                 anchorY={"middle"}
+//                 position={[0, 0, 0.36]}
+//               >
+//                 {explode}
+//               </Text>
+//             )}
+//             <Edges renderOrder={1000}>
+//               <meshBasicMaterial color="yellow" depthTest={false} />
+//             </Edges>
+//           </mesh>
+//           {Object.keys(nodes).map((key, index) => (
+//             <mesh
+//               key={index}
+//               name={key}
+//               geometry={nodes[key].geometry}
+//               material={materials.CUBE}
+//               position={nodes[key].position}
+//               rotation={nodes[key].rotation}
+//               scale={0.21}
+//             />
+//           ))}
+//         </group>
+//       </group>
+//     </group>
+//   );
+// }
+
+// useGLTF.preload("/models/Explode_Cube1.glb");
