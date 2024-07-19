@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import * as React from "react";
 import { useState, useEffect, Suspense } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -51,17 +49,29 @@ export default function Home({ socket }) {
   const audio = new Audio(smallestloop);
   audio.loop = true;
 
+  // Move audio creation into useEffect and ensure proper cleanup
+  useEffect(() => {
+
+
+    if (play) {
+      audio.play();
+      audio.loop = true;
+    }
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
+  }, [play]);
+
   const handleClick = () => {
     setOpen(true);
   };
-
-  console.log(backgroundUri, "backgroundUri", cube);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
@@ -79,7 +89,6 @@ export default function Home({ socket }) {
 
   useEffect(() => {
     socket.on("messageIncoming", (data) => {
-      console.log("meesage incoming", data);
       setPlay(true);
       setReset(true);
       const { filtered } = data;
@@ -89,11 +98,14 @@ export default function Home({ socket }) {
 
       setMessage(filtered);
       handleClick();
-
-      console.log(data);
-      // url = data.url;
-      // setBackgroundUri(`${process.env.REACT_APP_BACKEND_URL}static/${url}`);
     });
+
+    return () => {
+      socket.off("messageIncoming");
+    };
+  }, [socket, addHistory, setExplode, setReset]);
+
+  useEffect(() => {
     (async () => {
       let url = "";
       if (pathname === "/public_view" && searchParams.get("background")) {
@@ -109,31 +121,12 @@ export default function Home({ socket }) {
         }
       }
     })();
-
-    return () => {
-      socket.off("messageIncoming");
-      // this now gets called when the component unmounts
-    };
-  }, []);
-
-  console.log(explode, cube, "explode, cube");
-  useEffect(() => {
-    if (play) {
-      audio.play();
-      audio.loop = true;
-    }
-  }, [play]);
-
-  useEffect(() => {
-    console.log("explode ====>", explode);
-    console.log("cube ====>", cube);
-  }, [explode, backgroundUri]);
+  }, [pathname, searchParams, setBackgroundUri]);
 
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
       <CircularProgress />
       <Box sx={{ height: "100%", width: "100%" }}>
-        {/* {backgroundUri && ( */}
         <ReactPlayer
           url={backgroundUri}
           loop={true}
@@ -143,7 +136,6 @@ export default function Home({ socket }) {
           height="100%"
           style={{ position: "absolute", top: "0px", left: "0px" }}
         />
-        {/* )} */}
         <div className="canvas-container">
           <Canvas
             gl={{
@@ -157,11 +149,10 @@ export default function Home({ socket }) {
               far: 2000,
             }}
           >
-            <ambientLight intensity={0.5} />
+            <ambientLight intensity={0.1} />
             <directionalLight position={[10, 10, 5]} />
-            <OrbitControls enableDamping dampingFactor={0.05} />
+            <OrbitControls enableDamping dampingFactor={0.5} />
             <Suspense fallback={null}>
-              {/* <Environment preset="city" blur={1} /> */}
               <Selection enabled>
                 <EffectComposer enabled autoClear={false}>
                   <Outline
@@ -176,15 +167,9 @@ export default function Home({ socket }) {
                     <ECube1 font={generateRandomFont()} socket={socket} />
                   )}
                   {cube.length > 0 &&
-                    cube.map((item, key) => {
-                      return (
-                        <Cube
-                          index={key}
-                          key={key}
-                          font={generateRandomFont()}
-                        />
-                      );
-                    })}
+                    cube.map((item, key) => (
+                      <Cube index={key} key={key} font={generateRandomFont()} />
+                    ))}
                 </Select>
               </Selection>
             </Suspense>
