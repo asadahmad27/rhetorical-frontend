@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import * as React from "react";
 import { useState, useEffect, Suspense } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -79,7 +77,7 @@ export default function Home({ socket }) {
 
   useEffect(() => {
     socket.on("messageIncoming", (data) => {
-      console.log("meesage incoming", data);
+      console.log("message incoming", data);
       setPlay(true);
       setReset(true);
       const { filtered } = data;
@@ -91,8 +89,6 @@ export default function Home({ socket }) {
       handleClick();
 
       console.log(data);
-      // url = data.url;
-      // setBackgroundUri(`${process.env.REACT_APP_BACKEND_URL}static/${url}`);
     });
     (async () => {
       let url = "";
@@ -112,9 +108,8 @@ export default function Home({ socket }) {
 
     return () => {
       socket.off("messageIncoming");
-      // this now gets called when the component unmounts
     };
-  }, []);
+  }, [socket, pathname, searchParams, setBackgroundUri, setExplode, setReset, addHistory]);
 
   console.log(explode, cube, "explode, cube");
   useEffect(() => {
@@ -129,11 +124,24 @@ export default function Home({ socket }) {
     console.log("cube ====>", cube);
   }, [explode, backgroundUri]);
 
+  // Function to generate positions
+  const generatePositions = (count, spacing = 5) => {
+    const positions = [];
+    const gridSize = Math.ceil(Math.sqrt(count));
+    for (let i = 0; i < count; i++) {
+      const x = (i % gridSize) * spacing - (gridSize / 2) * spacing;
+      const y = Math.floor(i / gridSize) * spacing - (gridSize / 2) * spacing;
+      positions.push([x, y, 0]);
+    }
+    return positions;
+  };
+
+  const cubePositions = generatePositions(cube.length);
+
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
       <CircularProgress />
       <Box sx={{ height: "100%", width: "100%" }}>
-        {/* {backgroundUri && ( */}
         <ReactPlayer
           url={backgroundUri}
           loop={true}
@@ -143,7 +151,6 @@ export default function Home({ socket }) {
           height="100%"
           style={{ position: "absolute", top: "0px", left: "0px" }}
         />
-        {/* )} */}
         <div className="canvas-container">
           <Canvas
             gl={{
@@ -161,7 +168,6 @@ export default function Home({ socket }) {
             <directionalLight position={[10, 10, 5]} />
             <OrbitControls enableDamping dampingFactor={0.05} />
             <Suspense fallback={null}>
-              {/* <Environment preset="city" blur={1} /> */}
               <Selection enabled>
                 <EffectComposer enabled autoClear={false}>
                   <Outline
@@ -176,15 +182,14 @@ export default function Home({ socket }) {
                     <ECube1 font={generateRandomFont()} socket={socket} />
                   )}
                   {cube.length > 0 &&
-                    cube.map((item, key) => {
-                      return (
-                        <Cube
-                          index={key}
-                          key={key}
-                          font={generateRandomFont()}
-                        />
-                      );
-                    })}
+                    cube.map((item, key) => (
+                      <Cube
+                        index={key}
+                        key={key}
+                        font={generateRandomFont()}
+                        position={cubePositions[key]}
+                      />
+                    ))}
                 </Select>
               </Selection>
             </Suspense>
