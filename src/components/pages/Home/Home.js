@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as React from "react";
 import { useState, useEffect, Suspense } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -53,7 +54,7 @@ export default function Home({ socket }) {
     setOpen(true);
   };
 
-  console.log(backgroundUri, "backgroundUri", cube);
+  console.log(audio, "backgroundUri");
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -109,34 +110,35 @@ export default function Home({ socket }) {
     return () => {
       socket.off("messageIncoming");
     };
-  }, [socket, pathname, searchParams, setBackgroundUri, setExplode, setReset, addHistory]);
+  }, []);
 
   console.log(explode, cube, "explode, cube");
   useEffect(() => {
+    console.log("play ====>", play);
     if (play) {
       audio.play();
       audio.loop = true;
     }
   }, [play]);
 
-  useEffect(() => {
-    console.log("explode ====>", explode);
-    console.log("cube ====>", cube);
-  }, [explode, backgroundUri]);
+  // useEffect(() => {
+  //   console.log("explode ====>", explode);
+  //   console.log("cube ====>", cube);
+  // }, [explode, backgroundUri]);
 
-  // Function to generate positions
-  const generatePositions = (count, spacing = 5) => {
-    const positions = [];
-    const gridSize = Math.ceil(Math.sqrt(count));
-    for (let i = 0; i < count; i++) {
-      const x = (i % gridSize) * spacing - (gridSize / 2) * spacing;
-      const y = Math.floor(i / gridSize) * spacing - (gridSize / 2) * spacing;
-      positions.push([x, y, 0]);
-    }
-    return positions;
-  };
+  // // Function to generate positions
+  // const generatePositions = (count, spacing = 5) => {
+  //   const positions = [];
+  //   const gridSize = Math.ceil(Math.sqrt(count));
+  //   for (let i = 0; i < count; i++) {
+  //     const x = (i % gridSize) * spacing - (gridSize / 2) * spacing;
+  //     const y = Math.floor(i / gridSize) * spacing - (gridSize / 2) * spacing;
+  //     positions.push([x, y, 0]);
+  //   }
+  //   return positions;
+  // };
 
-  const cubePositions = generatePositions(cube.length);
+  // const cubePositions = generatePositions(cube.length);
 
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
@@ -183,12 +185,7 @@ export default function Home({ socket }) {
                   )}
                   {cube.length > 0 &&
                     cube.map((item, key) => (
-                      <Cube
-                        index={key}
-                        key={key}
-                        font={generateRandomFont()}
-                        position={cubePositions[key]}
-                      />
+                      <Cube index={key} key={key} font={generateRandomFont()} />
                     ))}
                 </Select>
               </Selection>
