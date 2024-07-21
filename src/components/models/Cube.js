@@ -152,32 +152,32 @@ export function Cube(props) {
     if (materials[""]) materials[""].color.set("black");
   }, [actions]);
 
-  useEffect(() => {
-    console.log(
-      "index =====>",
-      index,
-      "actions ======>",
-      actions,
-      "materials ======>",
-      materials
-    );
-  }, []);
-  useFrame(() => {
-    if (positions.length <= index) {
-      // Add new position for the new cube
-      const x = Math.random() * 20 - 10;
-      const y = Math.random() * 20 - 10;
-      const z = Math.random() * 20 - 10;
-      setPositions((prevPositions) => [
-        ...prevPositions,
-        new THREE.Vector3(x, y, z),
-      ]);
-    } else {
-      applyRepulsion(positions, index);
-    }
-  });
+  // useEffect(() => {
+  //   console.log(
+  //     "index =====>",
+  //     index,
+  //     "actions ======>",
+  //     actions,
+  //     "materials ======>",
+  //     materials
+  //   );
+  // }, []);
+  // useFrame(() => {
+  //   if (positions.length <= index) {
+  //     // Add new position for the new cube
+  //     const x = Math.random() * 20 - 10;
+  //     const y = Math.random() * 20 - 10;
+  //     const z = Math.random() * 20 - 10;
+  //     setPositions((prevPositions) => [
+  //       ...prevPositions,
+  //       new THREE.Vector3(x, y, z),
+  //     ]);
+  //   } else {
+  //     applyRepulsion(positions, index);
+  //   }
+  // });
 
-  console.log(positions);
+  // console.log(positions);
 
   return (
     <group ref={group} {...props} dispose={null}>
