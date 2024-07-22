@@ -54,7 +54,7 @@ export default function Home({ socket }) {
     setOpen(true);
   };
 
-  console.log(audio, "backgroundUri");
+  console.log("100");
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -88,8 +88,6 @@ export default function Home({ socket }) {
 
       setMessage(filtered);
       handleClick();
-
-      console.log(data);
     });
     (async () => {
       let url = "";
@@ -112,9 +110,7 @@ export default function Home({ socket }) {
     };
   }, []);
 
-  console.log(explode, cube, "explode, cube");
   useEffect(() => {
-    console.log("play ====>", play);
     if (play) {
       audio.play();
       audio.loop = true;

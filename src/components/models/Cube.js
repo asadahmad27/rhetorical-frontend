@@ -196,7 +196,7 @@ export function Cube(props) {
               ? nodes[(index % 5) + 1].material
               : THREE.Mesh.material
           }
-          position={positions[index % 50]}
+          position={positions[index % 95]}
           rotation={rotations[index % 5]}
           scale={scales[index % 5]}
           userData={{ name: (index % 5) + 1 }}
